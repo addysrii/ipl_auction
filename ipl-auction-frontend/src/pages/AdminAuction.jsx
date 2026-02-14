@@ -4,7 +4,7 @@ import React from "react";
 export default function AdminAuction() {
   const [auction, setAuction] = useState(null);
   const [category, setCategory] = useState("");
-  const auctionId = '6990791ed6cfa73432d8865c';
+  const auctionId = '69908694ecf7fc71e80393ff';
 
   useEffect(() => {
     const loadAuction = async () => {
