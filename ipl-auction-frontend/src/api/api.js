@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://localhost:5005/api"
+  baseURL: "https://ipl-auction-m1p6.onrender.com/api"
 });
 
 export default API;
