@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 export default function AudienceAuction() {
   const [category, setCategory] = useState(null);
   const [player, setPlayer] = useState(null);
-  const auctionId = "6990791ed6cfa73432d8865c";
+  const auctionId = "69908694ecf7fc71e80393ff";
 
   // 🔹 LOAD STATE ON REFRESH
   useEffect(() => {
