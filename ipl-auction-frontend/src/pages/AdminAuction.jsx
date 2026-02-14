@@ -41,6 +41,7 @@ export default function AdminAuction() {
         <option value="">Select category</option>
         <option>Star_Indian_Batter</option>
         <option>Foreign_Batters </option>
+        <option>Indian_Wicketkeppers  </option>
       </select>
 
       <div className="flex gap-3">
