@@ -24,7 +24,7 @@ const playerSchema = new mongoose.Schema({
     category: {
         type: String,
         required: true
-    }
+    },
 })
 
 export  default mongoose.model('Players', playerSchema)

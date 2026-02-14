@@ -1,19 +1,59 @@
-import express from "express"
-import Player from "./routes/player.routes.js"
-import mongoose from "mongoose"
-import cors from "cors"
+import express from "express";
+import dotenv from "dotenv";
+import connectDB from "./config/db.js";
+import { createServer } from "http";
+import { Server } from "socket.io";
+import cors from "cors";
 
-const app = express()               
+import teamRoutes from "./routes/teamRoutes.js";
+import playerRoutes from "./routes/playerRoutes.js";
+import auctionRoutes from "./routes/auctionRoutes.js";
+import bidRoutes from "./routes/bidRoutes.js";
 
-app.use(express.json())
+dotenv.config();
+connectDB();
 
-app.use("/api/players", Player)
-const MONGO_URI='mongodb+srv://gdgocpsit_db_user:lDRKLmID1knvmWj1@biddingbattle.juhlpbi.mongodb.net/?appName=BiddingBattle'
-app.listen(5004, () => {
-    console.log("Server is running on port 5004")
-})  
-mongoose.connect(MONGO_URI).then(() => {
-    console.log("Connected to MongoDB")
-}).catch((error) => {
-    console.log(error)
-})
+const app = express();
+const httpServer = createServer(app);
+
+app.use(cors({
+  origin: "http://localhost:5173",
+  credentials: true
+}));
+
+const io = new Server(httpServer, {
+  cors: {
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST"]
+  }
+});
+
+// 🔥 THIS IS THE MISSING PIECE
+app.use((req, res, next) => {
+  req.io = io;
+  next();
+});
+
+app.use(express.json());
+
+app.use("/api/teams", teamRoutes);
+app.use("/api/players", playerRoutes);
+app.use("/api/auctions", auctionRoutes);
+app.use("/api/bids", bidRoutes);
+
+// 🔴 SOCKET EVENTS
+io.on("connection", (socket) => {
+  console.log("User connected:", socket.id);
+
+  socket.on("placeBid", (bidData) => {
+    io.emit("newBid", bidData);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("User disconnected");
+  });
+});
+
+httpServer.listen(process.env.PORT, () =>
+  console.log(`Server running on ${process.env.PORT}`)
+);
