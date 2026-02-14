@@ -23,7 +23,7 @@ app.use(cors({
 
 const io = new Server(httpServer, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: "https://ipl-auction-eta.vercel.app",
     methods: ["GET", "POST"]
   }
 });
