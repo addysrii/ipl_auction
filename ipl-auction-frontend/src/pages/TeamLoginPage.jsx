@@ -35,7 +35,7 @@ export default function TeamLogin() {
 
         <button
           onClick={login}
-          className="w-full bg-blue text-white py-3 rounded font-semibold"
+          className="w-full bg-blue text-black py-3 rounded font-semibold"
         >
           Login
         </button>
