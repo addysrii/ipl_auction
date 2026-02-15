@@ -25,10 +25,13 @@ export const placeBid = async (req, res) => {
 export const closeBidding = async (req, res) => {
   const { playerId } = req.body;
 
-  const highestBid = await Bid.find({ player: playerId })
-    .sort({ amount: -1 })
-    .limit(1)
-    .populate("team");
+  const highestBid = await Bid.find({
+  auction: auctionId,
+  player: playerId
+})
+  .sort({ amount: -1 })
+  .limit(1)
+  .populate("team");
 
   if (!highestBid.length)
     return res.json({ message: "Player Unsold" });
@@ -45,6 +48,11 @@ export const closeBidding = async (req, res) => {
     soldTo: team._id,
     status: "SOLD"
   });
+req.io.emit("playerSold", {
+  playerId,
+  team: team._id,
+  amount: bid.amount
+});
 
   res.json({ message: "Player Sold", team, bid });
 };
@@ -52,11 +60,11 @@ export const getHighestBid = async (req, res) => {
   const { auctionId, playerId } = req.params;
 
   const bid = await Bid.findOne({
-    auctionId,
-    playerId
+    auction: auctionId,
+    player: playerId
   })
     .sort({ amount: -1 })
-    .populate("teamId", "name");
+    .populate("team", "name");
 
   res.json(bid);
 };
