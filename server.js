@@ -19,7 +19,6 @@ const httpServer = createServer(app);
 
 app.use(cors({
   origin: "*",
-  
   credentials: true
 }));
 
@@ -51,8 +50,8 @@ io.on("connection", (socket) => {
 
 
     const lastBid = await Bid.findOne({
-      auctionId,
-      playerId
+      auction: auctionId,
+  player: playerId
     }).sort({ amount: -1 });
 
     if (lastBid && amount <= lastBid.amount) {
@@ -82,6 +81,7 @@ io.on("connection", (socket) => {
       time: bid.createdAt
     });
   });
+  
 
   socket.on("disconnect", () => {
     console.log("Client disconnected");
