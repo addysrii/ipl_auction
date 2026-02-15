@@ -1,5 +1,6 @@
 import Auction from "../models/Auction.js";
 import Player from "../models/Player.js";
+import Team from "../models/Team.js";
 export const createAuction = async (req, res) => {
   const auction = await Auction.create(req.body);
   res.status(201).json(auction);
@@ -252,7 +253,7 @@ export const generateRandomPlayer = async (req, res) => {
 export const getAuctionState = async (req, res) => {
   const auction = await Auction.findById(req.params.id)
   .populate("currentPlayer")
-  
+  const teams = await Team.find().populate("players");
 
 
   if (!auction) {
