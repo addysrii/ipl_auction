@@ -252,12 +252,7 @@ export const generateRandomPlayer = async (req, res) => {
 
 export const getAuctionState = async (req, res) => {
   const auction = await Auction.findById(req.params.id)
-  .populate("currentPlayer")
-  .populate({
-    path: "teams",
-    populate: { path: "players" }
-  });
-
+    .populate("currentPlayer");
 
   if (!auction) {
     return res.status(404).json({ message: "Auction not found" });
