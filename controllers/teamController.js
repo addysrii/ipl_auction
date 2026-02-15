@@ -28,3 +28,21 @@ export const updateTeam = async (req, res) => {
     const updatedTeam = await Team.findByIdAndUpdate(_id, { ...team, _id }, { new: true })
     res.json(updatedTeam)
 }
+export const teamLogin = async (req,res) => {
+const { name, password } = req.body;
+
+  const team = await Team.findOne({ name });
+
+  if (!team) {
+    return res.status(404).json({
+      message: "Team not found"
+    });
+  }
+  if (team.password !== password) {
+    return res.status(401).json({
+      message: "Invalid password"
+    });
+  }
+
+  res.json(team);
+}

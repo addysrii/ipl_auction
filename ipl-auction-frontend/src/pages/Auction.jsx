@@ -63,10 +63,10 @@ export default function Auction() {
   return (
     <div className="p-6 grid grid-cols-4 gap-6 bg-white min-h-screen">
 
-      {/* LEFT PANEL – AUCTION CONTROL */}
+
       <div className="col-span-3">
 
-        {/* CATEGORY BAR */}
+       
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-2xl font-bold text-blue">
             IPL Auction Simulator
@@ -77,18 +77,18 @@ export default function Auction() {
           </span>
         </div>
 
-        {/* PLAYER DISPLAY */}
+        
         {auction.currentPlayer ? (
           <div className="border rounded-2xl p-6 flex gap-6 shadow">
 
-            {/* PROFILE IMAGE */}
+            
             <img
               src={auction.currentPlayer.profilePicture}
               alt={auction.currentPlayer.name}
               className="w-40 h-40 rounded-full object-cover border"
             />
 
-            {/* PLAYER INFO */}
+           
             <div className="flex-1">
               <h2 className="text-3xl font-bold">
                 {auction.currentPlayer.name}
@@ -121,7 +121,7 @@ export default function Auction() {
           </div>
         )}
 
-        {/* CONTROLS */}
+        
         <div className="mt-6 flex gap-4">
           <button
             onClick={startNextCategory}
@@ -141,14 +141,14 @@ export default function Auction() {
         </div>
       </div>
 
-      {/* RIGHT PANEL – BIDDING */}
+
       <div className="border rounded-xl p-4 shadow">
 
         <h3 className="font-bold text-lg mb-3 text-blue">
           Live Bidding
         </h3>
 
-        {/* BID INPUT */}
+   
         <input
           type="number"
           placeholder="Bid amount (Lakhs)"
@@ -164,7 +164,7 @@ export default function Auction() {
           Place Bid
         </button>
 
-        {/* BID HISTORY */}
+       
         <div className="mt-4">
           <h4 className="font-semibold mb-2">Bid History</h4>
 

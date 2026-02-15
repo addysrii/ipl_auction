@@ -48,3 +48,15 @@ export const closeBidding = async (req, res) => {
 
   res.json({ message: "Player Sold", team, bid });
 };
+export const getHighestBid = async (req, res) => {
+  const { auctionId, playerId } = req.params;
+
+  const bid = await Bid.findOne({
+    auctionId,
+    playerId
+  })
+    .sort({ amount: -1 })
+    .populate("teamId", "name");
+
+  res.json(bid);
+};

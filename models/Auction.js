@@ -1,4 +1,4 @@
-import e from "express";
+
 import mongoose from "mongoose";
 const auctionSchema = new mongoose.Schema({
   name: String,
@@ -6,12 +6,18 @@ const auctionSchema = new mongoose.Schema({
   status: {
     type: String,
     enum: ["NOT_STARTED", "LIVE", "COMPLETED"],
-    default: "NOT_STARTED"
+    default: "LIVE"
   },
 
   currentCategory: {
     type: String,
     default: null
+  },
+
+ 
+  completedCategories: {
+    type: [String],
+    default: []
   },
 
   currentPlayer: {
@@ -26,5 +32,6 @@ const auctionSchema = new mongoose.Schema({
     }
   ]
 });
+
 
 export default mongoose.model("Auction", auctionSchema);

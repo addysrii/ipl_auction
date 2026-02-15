@@ -69,7 +69,7 @@ export const nextPlayer = async (req, res) => {
 
   auction.currentPlayerIndex += 1;
 
-  // Category finished
+ 
   if (
     auction.currentPlayerIndex >=
     auction.categoryPlayersQueue.length
@@ -97,15 +97,36 @@ export const nextPlayer = async (req, res) => {
 export const selectCategory = async (req, res) => {
   const { auctionId, category } = req.body;
 
-  const auction = await Auction.findByIdAndUpdate(
-    auctionId,
-    {
-      currentCategory: category,
-      currentPlayer: null,
-      shownPlayers: []
-    },
-    { new: true }
-  );
+  const auction = await Auction.findById(auctionId);
+
+  // ❌ Category already completed
+  if (auction.completedCategories.includes(category)) {
+    return res.status(400).json({
+      message: "Category already completed"
+    });
+  }
+
+  // Check if players exist
+  const playersExist = await Player.exists({
+    category,
+    status: "UNSOLD"
+  });
+
+  if (!playersExist) {
+    // Mark category as completed immediately
+    auction.completedCategories.push(category);
+    await auction.save();
+
+    return res.status(400).json({
+      message: "No players in this category"
+    });
+  }
+
+  auction.currentCategory = category;
+  auction.currentPlayer = null;
+  auction.shownPlayers = [];
+
+  await auction.save();
 
   req.io.emit("categorySelected", category);
 
@@ -188,7 +209,6 @@ export const generateRandomPlayer = async (req, res) => {
 
   const auction = await Auction.findById(auctionId);
 
-  // ✅ Now this works
   if (!auction.currentCategory) {
     return res.status(400).json({
       message: "Select category first"
@@ -201,9 +221,19 @@ export const generateRandomPlayer = async (req, res) => {
     _id: { $nin: auction.shownPlayers }
   });
 
+  // ✅ CATEGORY FINISHED
   if (players.length === 0) {
-    return res.status(400).json({
-      message: "No players left in this category"
+    auction.completedCategories.push(auction.currentCategory);
+    auction.currentCategory = null;
+    auction.currentPlayer = null;
+    auction.shownPlayers = [];
+
+    await auction.save();
+
+    req.io.emit("categoryCompleted");
+
+    return res.json({
+      message: "Category completed"
     });
   }
 
@@ -216,10 +246,9 @@ export const generateRandomPlayer = async (req, res) => {
 
   req.io.emit("playerRevealed", randomPlayer);
 
-  res.json({
-    player: randomPlayer
-  });
+  res.json({ player: randomPlayer });
 };
+
 export const getAuctionState = async (req, res) => {
   const auction = await Auction.findById(req.params.id)
     .populate("currentPlayer");

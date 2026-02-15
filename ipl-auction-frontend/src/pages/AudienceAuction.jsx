@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import API from "../api/api";
 import {socket} from "../api/socket";
-import { motion } from "framer-motion";
+
 export default function AudienceAuction() {
+  const { id: auctionId } = useParams();
+
   const [category, setCategory] = useState(null);
   const [player, setPlayer] = useState(null);
-  const auctionId = "69908694ecf7fc71e80393ff";
 
-  // 🔹 LOAD STATE ON REFRESH
+
   useEffect(() => {
     const loadAuction = async () => {
       const res = await API.get(`/auctions/${auctionId}`);
@@ -16,18 +18,11 @@ export default function AudienceAuction() {
     };
 
     loadAuction();
-  }, []);
+  }, [auctionId]);
 
-  // 🔹 LIVE UPDATES
   useEffect(() => {
-    socket.on("categorySelected", (cat) => {
-      setCategory(cat);
-      setPlayer(null);
-    });
-
-    socket.on("playerRevealed", (p) => {
-      setPlayer(p);
-    });
+    socket.on("categorySelected", setCategory);
+    socket.on("playerRevealed", setPlayer);
 
     return () => {
       socket.off("categorySelected");
@@ -36,14 +31,7 @@ export default function AudienceAuction() {
   }, []);
 
   return (
-      <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
-      className="min-h-screen p-6"
-    >
-      <h1 className="text-3xl font-bold mb-4">Audience</h1>
-    <div className="min-h-screen flex flex-col items-center justify-center bg-white">
+    <div className="min-h-screen bg-white flex flex-col items-center justify-center">
       {category && (
         <h1 className="text-4xl font-bold text-yellow mb-8">
           {category.replaceAll("_", " ")}
@@ -70,6 +58,5 @@ export default function AudienceAuction() {
         </div>
       )}
     </div>
-       </motion.div>
   );
 }
