@@ -18,7 +18,8 @@ const app = express();
 const httpServer = createServer(app);
 
 app.use(cors({
-  origin: "https://ipl-auction-eta.vercel.app",
+  origin: "*",
+  
   credentials: true
 }));
 
